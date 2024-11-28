@@ -1,0 +1,52 @@
+{
+  "name": "force-package-manager",
+  "version": "1.0.0",
+  "description": "TODO",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "bin": {
+    "force-package-manager": "build/cli.js"
+  },
+  "scripts": {
+    "clear-build-folder": "rm -rf ./build",
+    "transpile": "tsc",
+    "fix-paths": "tsc-alias",
+    "make-cli-executable": "chmod +x ./build/cli.js",
+    "build": "yarn clear-build-folder && yarn transpile && yarn fix-paths && yarn make-cli-executable",
+    "dev": "yarn nodemon",
+    "test": "jest"
+  },
+  "keywords": [
+    "TODO"
+  ],
+  "files": [
+    "build"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maks-io/force-package-manager.git"
+  },
+  "author": "Markus Kurzmann <markus@kurzmann.io>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maks-io/force-package-manager/issues"
+  },
+  "homepage": "https://github.com/maks-io/force-package-manager#readme",
+  "dependencies": {
+    "cheese-log": "^4.0.0",
+    "identify-package-manager": "^1.0.4",
+    "minimist": "^1.2.8",
+    "semver": "^7.6.3",
+    "which-pm-runs": "^1.1.0",
+    "who-am-i-now": "^2.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "@types/semver": "^7.5.8",
+    "nodemon": "^3.1.7",
+    "prettier": "^3.4.1",
+    "tsc": "^2.0.4",
+    "tsc-alias": "^1.8.10",
+    "typescript": "^5.7.2"
+  }
+}
