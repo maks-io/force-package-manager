@@ -311,10 +311,10 @@ identify-monorepo-root@^1.0.9:
     minimist "^1.2.8"
     who-am-i-now "^2.1.1"
 
-identify-package-manager@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/identify-package-manager/-/identify-package-manager-1.0.4.tgz#15129e50e57e62213d0613082956e2d0a93fd5c9"
-  integrity sha512-mXhRz6KNBO4NMSUt55HCWe7jJr9IWY+HId8yTZHnvmP0wGIVFy0FrtuVwQiTl4ZqWXS3UhPg55bcpeOuD/B67Q==
+identify-package-manager@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/identify-package-manager/-/identify-package-manager-1.1.0.tgz#18bf84de363903c8468ccfea69f085cc6d8a0451"
+  integrity sha512-iJ7iZMKzlmRWSfHPNHww2G2cy2dZf3CAzGvP0abpfu9iY+Rt2HYnmLAhdqS45F+mgo3xy0pisPy534NAwPfPJg==
   dependencies:
     identify-monorepo-root "^1.0.9"
     minimist "^1.2.8"
