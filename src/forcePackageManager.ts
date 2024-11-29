@@ -79,6 +79,10 @@ export const forcePackageManager = (pkgMngrNameFromArgs?: string, pkgMngrVersion
 
   if (errorOccurred) {
     log(outputMode, "normal", "", `\t\t(skipped due to error)`);
+
+    log(outputMode, "normal", CheeseColors.blue, `\tStep 3/3 - validate running package manager vs. wanted package manager - DONE`);
+    log(outputMode, "normal", CheeseColors.blue, `=================================`);
+    return true;
   } else {
     const isValid = packageManagerRunning.name === packageManagerName && satisfies(packageManagerRunning.version, packageManagerVersion);
 
@@ -100,7 +104,4 @@ export const forcePackageManager = (pkgMngrNameFromArgs?: string, pkgMngrVersion
     log(outputMode, "normal", CheeseColors.blue, `=================================`);
     return false;
   }
-
-  log(outputMode, "normal", CheeseColors.blue, `\tStep 3/3 - validate running package manager vs. wanted package manager - DONE`);
-  log(outputMode, "normal", CheeseColors.blue, `=================================`);
 };

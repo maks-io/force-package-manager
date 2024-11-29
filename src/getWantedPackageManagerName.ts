@@ -9,8 +9,8 @@ export const getWantedPackageManagerName = (outputMode: VerboseMode, pkgMngrName
 
   if (pkgMngrNameFromArgs) {
     if (!allowedPkgManagers.includes(pkgMngrNameFromArgs as PackageManagerName)) {
-      log(outputMode, "verbose", CheeseColors.red, `\t\t→ Yes, but value is invalid: '${pkgMngrNameFromArgs}', but should be one of ${allowedPkgManagers.map((p) => `'${p}'`).join(", ")}`);
-      throw new Error(`Failed.`); // TODO
+      log(outputMode, "normal", CheeseColors.red, `\t\t→ Yes, but value is invalid: '${pkgMngrNameFromArgs}', but should be one of ${allowedPkgManagers.map((p) => `'${p}'`).join(", ")}`);
+      throw new Error(`Failed.`);
     } else {
       log(outputMode, "verbose", CheeseColors.green, `\t\t→ Yes: '${pkgMngrNameFromArgs}'`);
       return pkgMngrNameFromArgs as PackageManagerName;
@@ -23,8 +23,8 @@ export const getWantedPackageManagerName = (outputMode: VerboseMode, pkgMngrName
   const { name } = identifyPackageManager(false);
 
   if (!name || name === "unknown") {
-    log(outputMode, "verbose", CheeseColors.red, `\t\t→ No, could not detect any info regarding wanted package manager.`);
-    throw new Error(`Failed.`); // TODO
+    log(outputMode, "normal", CheeseColors.red, `\t\t→ No, could not detect any info regarding wanted package manager.`);
+    throw new Error(`Failed.`);
   } else {
     log(outputMode, "verbose", CheeseColors.green, `\t\t→ Yes, the package manager is: ${name}`);
     return name;

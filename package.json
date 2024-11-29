@@ -1,7 +1,7 @@
 {
   "name": "force-package-manager",
-  "version": "1.0.0",
-  "description": "TODO",
+  "version": "1.0.1",
+  "description": "A Command Line Tool to avoid that different team members use different package managers by accident, and therefor mess up your repository.",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "bin": {
@@ -17,7 +17,17 @@
     "test": "jest"
   },
   "keywords": [
-    "TODO"
+    "package manager",
+    "npm",
+    "yarn",
+    "yarn-classic",
+    "yarn-berry",
+    "pnpm",
+    "bun",
+    "package-lock.json",
+    "yarn.lock",
+    "pnpm-lock.yaml",
+    "bun.lockb"
   ],
   "files": [
     "build"

@@ -10,14 +10,14 @@ export const getWantedPackageManagerVersion = (outputMode: VerboseMode, pkgMngrV
   let semverRangeFromArgs: string | Range;
   if (pkgMngrVersionFromArgs) {
     if (!validRange(pkgMngrVersionFromArgs)) {
-      log(outputMode, "verbose", CheeseColors.red, `\t\t→ Yes, but value is invalid: '${pkgMngrVersionFromArgs}', but it must be a valid semver version range`);
+      log(outputMode, "normal", CheeseColors.red, `\t\t→ Yes, but value is invalid: '${pkgMngrVersionFromArgs}', but it must be a valid semver version range`);
       throw new Error(`Failed.`);
     } else {
       log(outputMode, "verbose", CheeseColors.green, `\t\t→ Yes: '${pkgMngrVersionFromArgs}'`);
       semverRangeFromArgs = pkgMngrVersionFromArgs;
     }
   } else {
-    log(outputMode, "verbose", CheeseColors.red, `\t\t→ No.`);
+    log(outputMode, "normal", CheeseColors.red, `\t\t→ No.`);
   }
 
   log(outputMode, "verbose", "", `\t\tDo we have a version of the project's package manager?`);
@@ -27,8 +27,8 @@ export const getWantedPackageManagerVersion = (outputMode: VerboseMode, pkgMngrV
 
   if (simpleVersion) {
     if (!validRange(simpleVersion)) {
-      log(outputMode, "verbose", CheeseColors.red, `\t\t→ Yes, but it is not a valid semver version range: '${simpleVersion}'`);
-      throw new Error(`Failed.`); // TODO
+      log(outputMode, "normal", CheeseColors.red, `\t\t→ Yes, but it is not a valid semver version range: '${simpleVersion}'`);
+      throw new Error(`Failed.`);
     } else {
       log(outputMode, "verbose", CheeseColors.green, `\t\t→ Yes: '${simpleVersion}'`);
     }
@@ -55,7 +55,7 @@ export const getWantedPackageManagerVersion = (outputMode: VerboseMode, pkgMngrV
             CheeseColors.red,
             `\t\t→ No, the project's package manager version is ${simpleVersion}, but the required semver version range: '${semverRangeFromArgs}'\n\t\tSeems like the project's configuration and the force-package-manager script are having conflicting setups`,
           );
-          throw new Error(`Failed.`); // TODO
+          throw new Error(`Failed.`);
         } else {
           log(outputMode, "verbose", CheeseColors.green, `\t\t→ Yes`);
           return semverRangeFromArgs; // <- return the defined range from args
@@ -69,7 +69,7 @@ export const getWantedPackageManagerVersion = (outputMode: VerboseMode, pkgMngrV
             CheeseColors.red,
             `\t\t→ No, the project's package manager version range is ${simpleVersion}, but the required semver version range: '${semverRangeFromArgs}'\n\t\tSeems like the project's configuration and the force-package-manager script are having conflicting setups`,
           );
-          throw new Error(`Failed.`); // TODO
+          throw new Error(`Failed.`);
         } else {
           log(outputMode, "verbose", CheeseColors.green, `\t\t→ Yes`);
           return simpleVersion; // <- return the smallest allowed range
