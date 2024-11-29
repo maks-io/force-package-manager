@@ -33,8 +33,7 @@
   },
   "homepage": "https://github.com/maks-io/force-package-manager#readme",
   "dependencies": {
-    "ansicolor": "^2.0.3",
-    "cheese-log": "link:.yalc/cheese-log",
+    "cheese-log": "^4.0.1",
     "identify-package-manager": "^1.1.0",
     "minimist": "^1.2.8",
     "semver": "^7.6.3",

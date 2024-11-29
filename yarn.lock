@@ -106,9 +106,17 @@ capitalize-lightweight@^1.0.2:
   resolved "https://registry.yarnpkg.com/capitalize-lightweight/-/capitalize-lightweight-1.0.2.tgz#d3dedf2dd083686a56b222d84ee24df27fa772f6"
   integrity sha512-vFxaj5vCM3u7SFuDXptSI3W50wtx29cKFifCCKMyKeNej4J7Ke0JvcLHCmSevmiF1GM/IVij4iGab4zv7CVFEQ==
 
-"cheese-log@link:.yalc/cheese-log":
-  version "0.0.0"
-  uid ""
+cheese-log@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/cheese-log/-/cheese-log-4.0.1.tgz#4d2277852cf9a5c0ce531795ec7de8b92a6fe40b"
+  integrity sha512-m/4yEJQjOhimTFC+fI/bfEsBniqhKYVAeTPJSXoQ2VBYNVslA88C+3LAxDLcLODX+f9kfMKyEi6cWurZAkntiw==
+  dependencies:
+    ansicolor "^2.0.3"
+    capitalize-lightweight "^1.0.2"
+    dayjs "^1.11.13"
+    string-table "^0.1.5"
+    util "^0.12.5"
+    who-am-i-now "^2.1.1"
 
 chokidar@^3.5.2, chokidar@^3.5.3:
   version "3.6.0"
