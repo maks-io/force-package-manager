@@ -23,6 +23,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@types/minimist@^1.2.5":
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/@types/minimist/-/minimist-1.2.5.tgz#ec10755e871497bcd83efe927e43ec46e8c0747e"
+  integrity sha512-hov8bUuiLiyFPGyFPE1lwWhmzYbirOXQNNo40+y3zow8aFVTeyn3VWL0VFFfdNddA8S4Vf0Tc062rzyNr7Paag==
+
 "@types/node@^22.10.1":
   version "22.10.1"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-22.10.1.tgz#41ffeee127b8975a05f8c4f83fb89bcb2987d766"
@@ -101,17 +106,9 @@ capitalize-lightweight@^1.0.2:
   resolved "https://registry.yarnpkg.com/capitalize-lightweight/-/capitalize-lightweight-1.0.2.tgz#d3dedf2dd083686a56b222d84ee24df27fa772f6"
   integrity sha512-vFxaj5vCM3u7SFuDXptSI3W50wtx29cKFifCCKMyKeNej4J7Ke0JvcLHCmSevmiF1GM/IVij4iGab4zv7CVFEQ==
 
-cheese-log@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/cheese-log/-/cheese-log-4.0.0.tgz#2f6af63aa9a4719368ba535c431bccbf7b67068e"
-  integrity sha512-JizKRWvGRLqpS3or84tUO4cjD5WNM50QHfBtDHEeP5x/pIzK0bTqFjhp29w+mHEqZ481i7d7xa9qNU4vu1tl2w==
-  dependencies:
-    ansicolor "^2.0.3"
-    capitalize-lightweight "^1.0.2"
-    dayjs "^1.11.13"
-    string-table "^0.1.5"
-    util "^0.12.5"
-    who-am-i-now "^2.1.1"
+"cheese-log@link:.yalc/cheese-log":
+  version "0.0.0"
+  uid ""
 
 chokidar@^3.5.2, chokidar@^3.5.3:
   version "3.6.0"

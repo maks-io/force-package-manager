@@ -1,10 +1,12 @@
 import { whoAmINow } from "who-am-i-now";
-import { identifyPackageManager, PackageManagerInfo, PackageManagerName } from "identify-package-manager";
-import { cheese } from "cheese-log";
+import { PackageManagerName } from "identify-package-manager";
+import { cheese, CheeseColors } from "cheese-log";
 import { getWantedPackageManagerName } from "./getWantedPackageManagerName";
 import { getWantedPackageManagerVersion } from "./getWantedPackageManagerVersion";
 import { Range, satisfies } from "semver";
 import { getRunningPackageManagerInfo } from "./getRunningPackageManagerInfo";
+import { allowedVerboseModes, VerboseMode } from "./allowedVerboseModes";
+import { log } from "./log";
 
 // TODO fix too many newlines in cheeselog
 cheese.config({
@@ -18,88 +20,87 @@ cheese.config({
 
 const pkgPrefix = "force-package-manager";
 
-//TODO wrong type
-export const forcePackageManager = (pkgMngrNameFromArgs?: string, pkgMngrVersionFromArgs?: string) => {
+export const forcePackageManager = (pkgMngrNameFromArgs?: string, pkgMngrVersionFromArgs?: string, outputMode: VerboseMode = "verbose") => {
   const who = whoAmINow();
 
   if (!who.isServerApp) {
     throw new Error("Library 'force-package-manager' can only be used server side.");
   }
 
-  cheese.infoBlue(`==== ${pkgPrefix} =====`);
+  if (!allowedVerboseModes.includes(outputMode)) {
+    throw new Error(`Invalid output mode '${outputMode}', should be one of ${allowedVerboseModes.map((o) => `'${o}'`).join(", ")}`);
+  }
+
+  log(outputMode, "normal", CheeseColors.blue, `==== ${pkgPrefix} =====`);
 
   let errorOccurred = false;
 
-  cheese.infoBlue(`Step 1/3 - detect wanted package manager - START`);
+  log(outputMode, "normal", CheeseColors.blue, `\tStep 1/3 - detect wanted package manager - START`);
 
   let packageManagerName: PackageManagerName;
   let packageManagerVersion: string | Range | undefined;
 
   try {
-    packageManagerName = getWantedPackageManagerName(pkgMngrNameFromArgs);
-    packageManagerVersion = getWantedPackageManagerVersion(pkgMngrVersionFromArgs);
+    packageManagerName = getWantedPackageManagerName(outputMode, pkgMngrNameFromArgs);
+    packageManagerVersion = getWantedPackageManagerVersion(outputMode, pkgMngrVersionFromArgs);
 
-    cheese.infoBlue("\tDetected package manager name:");
-    cheese.infoGreen(`\t${packageManagerName}`);
-    cheese.infoBlue("\tDetected package manager version:");
-    cheese.infoGreen(`\t${packageManagerVersion}`);
+    log(outputMode, "normal", CheeseColors.blue, "\t\tDetected package manager name:");
+    log(outputMode, "normal", CheeseColors.green, `\t\t${packageManagerName}`);
+    log(outputMode, "normal", CheeseColors.blue, "\t\tDetected package manager version:");
+    log(outputMode, "normal", CheeseColors.green, `\t\t${packageManagerVersion}`);
   } catch (e) {
     errorOccurred = true;
   }
 
-  cheese.infoBlue(`Step 1/3 - detect wanted package manager - DONE`);
+  log(outputMode, "normal", CheeseColors.blue, `\tStep 1/3 - detect wanted package manager - DONE`);
 
-  cheese.infoBlue(`Step 2/3 - detect running package manager - START`);
+  log(outputMode, "normal", CheeseColors.blue, `\tStep 2/3 - detect running package manager - START`);
 
   let packageManagerRunning;
 
   if (errorOccurred) {
-    cheese.infoBlack(`\t(skipped due to error)`);
+    log(outputMode, "normal", "", `\t\t(skipped due to error)`);
   } else {
     try {
       packageManagerRunning = getRunningPackageManagerInfo();
 
-      cheese.infoBlue("\tDetected package manager name:");
-      cheese.infoGreen(`\t${packageManagerRunning.name}`);
-      cheese.infoBlue("\tDetected package manager version:");
-      cheese.infoGreen(`\t${packageManagerRunning.version}`);
+      log(outputMode, "normal", CheeseColors.blue, "\t\tDetected package manager name:");
+      log(outputMode, "normal", CheeseColors.green, `\t\t${packageManagerRunning.name}`);
+      log(outputMode, "normal", CheeseColors.blue, "\t\tDetected package manager version:");
+      log(outputMode, "normal", CheeseColors.green, `\t\t${packageManagerRunning.version}`);
     } catch (e) {
       errorOccurred = true;
     }
   }
 
-  cheese.infoBlue(`Step 2/3 - detect running package manager - DONE`);
+  log(outputMode, "normal", CheeseColors.blue, `\tStep 2/3 - detect running package manager - DONE`);
 
-  cheese.infoBlue(`Step 3/3 - validate running package manager vs. wanted package manager - START`);
+  log(outputMode, "normal", CheeseColors.blue, `\tStep 3/3 - validate running package manager vs. wanted package manager - START`);
 
   if (errorOccurred) {
-    cheese.infoBlack(`\t(skipped due to error)`);
+    log(outputMode, "normal", "", `\t\t(skipped due to error)`);
   } else {
-    const isValid =
-      packageManagerRunning.name === packageManagerName &&
-      satisfies(packageManagerRunning.version, packageManagerVersion);
+    const isValid = packageManagerRunning.name === packageManagerName && satisfies(packageManagerRunning.version, packageManagerVersion);
 
     if (isValid) {
-      cheese.infoGreen(
-        `\tPackage manager '${packageManagerRunning.name}' with version ${packageManagerRunning.version} is valid!`,
-      );
+      log(outputMode, "normal", CheeseColors.green, `\t\tPackage manager '${packageManagerRunning.name}' with version ${packageManagerRunning.version} is valid!`);
 
-      cheese.infoBlue(`Step 3/3 - validate running package manager vs. wanted package manager - DONE`);
+      log(outputMode, "normal", CheeseColors.blue, `\tStep 3/3 - validate running package manager vs. wanted package manager - DONE`);
+
       return true;
     } else {
       if (packageManagerRunning.name !== packageManagerName) {
-        cheese.infoRed(
-          `\tRunning Package manager is '${packageManagerRunning.name}', but should be '${packageManagerName}'!`,
-        );
+        log(outputMode, "mute", CheeseColors.red, `\t\tRunning Package manager is '${packageManagerRunning.name}', but should be '${packageManagerName}'!`);
       } else {
-        cheese.infoRed(
-          `\tRunning Package manager version is '${packageManagerRunning.version}', which does not satisfy ${packageManagerVersion}!`,
-        );
+        log(outputMode, "mute", CheeseColors.red, `\t\tRunning Package manager version is '${packageManagerRunning.version}', which does not satisfy ${packageManagerVersion}!`);
       }
     }
 
-    cheese.infoBlue(`Step 3/3 - validate running package manager vs. wanted package manager - DONE`);
+    log(outputMode, "normal", CheeseColors.blue, `\tStep 3/3 - validate running package manager vs. wanted package manager - DONE`);
+    log(outputMode, "normal", CheeseColors.blue, `=================================`);
     return false;
   }
-  cheese.infoBlue(`Step 3/3 - validate running package manager vs. wanted package manager - DONE`);
+
+  log(outputMode, "normal", CheeseColors.blue, `\tStep 3/3 - validate running package manager vs. wanted package manager - DONE`);
+  log(outputMode, "normal", CheeseColors.blue, `=================================`);
 };
