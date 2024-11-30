@@ -105,11 +105,11 @@ export const forcePackageManager = (pkgMngrNameFromArgs?: string, pkgMngrVersion
       if (packageManagerRunning.name !== packageManagerName) {
         const errorReason = `\t\tRunning Package manager is '${packageManagerRunning.name}', but should be '${packageManagerName}'!`;
         error = errorReason;
-        log(outputMode, "mute", CheeseColors.red, errorReason);
+        log(outputMode, "normal", CheeseColors.red, errorReason);
       } else {
         const errorReason = `\t\tRunning Package manager version is '${packageManagerRunning.version}', which does not satisfy ${packageManagerVersion}!`;
         error = errorReason;
-        log(outputMode, "mute", CheeseColors.red, errorReason);
+        log(outputMode, "normal", CheeseColors.red, errorReason);
       }
     }
 
