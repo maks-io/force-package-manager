@@ -11,13 +11,13 @@ export const getWantedPackageManagerVersion = (outputMode: VerboseMode, pkgMngrV
   if (pkgMngrVersionFromArgs) {
     if (!validRange(pkgMngrVersionFromArgs)) {
       log(outputMode, "normal", CheeseColors.red, `\t\t→ Yes, but value is invalid: '${pkgMngrVersionFromArgs}', but it must be a valid semver version range`);
-      throw new Error(`Failed.`);
+      throw new Error(`A semver version/range was provided via command line arguments, but it is not valid: ${pkgMngrVersionFromArgs}`);
     } else {
       log(outputMode, "verbose", CheeseColors.green, `\t\t→ Yes: '${pkgMngrVersionFromArgs}'`);
       semverRangeFromArgs = pkgMngrVersionFromArgs;
     }
   } else {
-    log(outputMode, "normal", CheeseColors.red, `\t\t→ No.`);
+    log(outputMode, "verbose", "", `\t\t→ No.`);
   }
 
   log(outputMode, "verbose", "", `\t\tDo we have a version of the project's package manager?`);
@@ -28,7 +28,7 @@ export const getWantedPackageManagerVersion = (outputMode: VerboseMode, pkgMngrV
   if (simpleVersion) {
     if (!validRange(simpleVersion)) {
       log(outputMode, "normal", CheeseColors.red, `\t\t→ Yes, but it is not a valid semver version range: '${simpleVersion}'`);
-      throw new Error(`Failed.`);
+      throw new Error(`The semver version range that was retrieved is not valid: ${simpleVersion}`);
     } else {
       log(outputMode, "verbose", CheeseColors.green, `\t\t→ Yes: '${simpleVersion}'`);
     }
@@ -49,13 +49,9 @@ export const getWantedPackageManagerVersion = (outputMode: VerboseMode, pkgMngrV
       if (isSpecificVersion) {
         log(outputMode, "verbose", "", `\t\tWe have a given version (${simpleVersion}) as well as a restriction (${semverRangeFromArgs}), let's validate if they go together...`);
         if (!satisfies(simpleVersion, semverRangeFromArgs)) {
-          log(
-            outputMode,
-            "verbose",
-            CheeseColors.red,
-            `\t\t→ No, the project's package manager version is ${simpleVersion}, but the required semver version range: '${semverRangeFromArgs}'\n\t\tSeems like the project's configuration and the force-package-manager script are having conflicting setups`,
-          );
-          throw new Error(`Failed.`);
+          const errorReason = `The project's package manager version is ${simpleVersion}, but the required semver version range is ${semverRangeFromArgs}\n\t\tSeems like the project's configuration and the force-package-manager script are having conflicting setups`;
+          log(outputMode, "verbose", CheeseColors.red, `\t\t→ No. ${errorReason}`);
+          throw new Error(errorReason);
         } else {
           log(outputMode, "verbose", CheeseColors.green, `\t\t→ Yes`);
           return semverRangeFromArgs; // <- return the defined range from args
@@ -63,13 +59,9 @@ export const getWantedPackageManagerVersion = (outputMode: VerboseMode, pkgMngrV
       } else {
         log(outputMode, "verbose", "", `\t\tWe have a given version range (${simpleVersion}) as well as a restriction (${semverRangeFromArgs}), let's validate if they go together...`);
         if (!subset(simpleVersion, semverRangeFromArgs)) {
-          log(
-            outputMode,
-            "verbose",
-            CheeseColors.red,
-            `\t\t→ No, the project's package manager version range is ${simpleVersion}, but the required semver version range: '${semverRangeFromArgs}'\n\t\tSeems like the project's configuration and the force-package-manager script are having conflicting setups`,
-          );
-          throw new Error(`Failed.`);
+          const errorReason = `The project's package manager version range is ${simpleVersion}, but the required semver version range: '${semverRangeFromArgs}'\n\t\tSeems like the project's configuration and the force-package-manager script are having conflicting setups`;
+          log(outputMode, "verbose", CheeseColors.red, `\t\t→ No. ${errorReason}`);
+          throw new Error(errorReason);
         } else {
           log(outputMode, "verbose", CheeseColors.green, `\t\t→ Yes`);
           return simpleVersion; // <- return the smallest allowed range

@@ -20,6 +20,10 @@ cheese.config({
 
 const pkgPrefix = "force-package-manager";
 
+const step1Title = "Step 1/3 - detect wanted package manager";
+const step2Title = "Step 2/3 - detect running package manager";
+const step3Title = "Step 3/3 - validate running package manager vs. wanted package manager";
+
 export const forcePackageManager = (pkgMngrNameFromArgs?: string, pkgMngrVersionFromArgs?: string, outputMode: VerboseMode = "verbose") => {
   const who = whoAmINow();
 
@@ -33,9 +37,11 @@ export const forcePackageManager = (pkgMngrNameFromArgs?: string, pkgMngrVersion
 
   log(outputMode, "normal", CheeseColors.blue, `==== ${pkgPrefix} =====`);
 
-  let errorOccurred = false;
+  let error = "";
 
-  log(outputMode, "normal", CheeseColors.blue, `\tStep 1/3 - detect wanted package manager - START`);
+  ///// Step 1/3 /////
+
+  log(outputMode, "normal", CheeseColors.blue, `\t${step1Title} - START`);
 
   let packageManagerName: PackageManagerName;
   let packageManagerVersion: string | Range | undefined;
@@ -49,18 +55,23 @@ export const forcePackageManager = (pkgMngrNameFromArgs?: string, pkgMngrVersion
     log(outputMode, "normal", CheeseColors.blue, "\t\tDetected package manager version:");
     log(outputMode, "normal", CheeseColors.green, `\t\t${packageManagerVersion}`);
   } catch (e) {
-    errorOccurred = true;
+    error = e.message;
   }
 
-  log(outputMode, "normal", CheeseColors.blue, `\tStep 1/3 - detect wanted package manager - DONE`);
+  if (error) {
+    log(outputMode, "normal", CheeseColors.red, `\t${step1Title} - DONE WITH ERROR`);
+    log(outputMode, "normal", CheeseColors.gray, `\t${step2Title} - SKIPPED`);
+    log(outputMode, "normal", CheeseColors.gray, `\t${step3Title} - SKIPPED`);
+  } else {
+    log(outputMode, "normal", CheeseColors.blue, `\t${step1Title} - DONE`);
+  }
 
-  log(outputMode, "normal", CheeseColors.blue, `\tStep 2/3 - detect running package manager - START`);
+  ///// Step 2/3 /////
 
   let packageManagerRunning;
 
-  if (errorOccurred) {
-    log(outputMode, "normal", "", `\t\t(skipped due to error)`);
-  } else {
+  if (!error) {
+    log(outputMode, "normal", error ? CheeseColors.gray : CheeseColors.blue, `\t${step2Title} - START`);
     try {
       packageManagerRunning = getRunningPackageManagerInfo();
 
@@ -69,39 +80,51 @@ export const forcePackageManager = (pkgMngrNameFromArgs?: string, pkgMngrVersion
       log(outputMode, "normal", CheeseColors.blue, "\t\tDetected package manager version:");
       log(outputMode, "normal", CheeseColors.green, `\t\t${packageManagerRunning.version}`);
     } catch (e) {
-      errorOccurred = true;
+      error = e.message;
+    }
+
+    if (error) {
+      log(outputMode, "normal", CheeseColors.red, `\t${step2Title} - DONE WITH ERROR`);
+      log(outputMode, "normal", CheeseColors.gray, `\t${step3Title} - SKIPPED`);
+    } else {
+      log(outputMode, "normal", CheeseColors.blue, `\t${step2Title} - DONE`);
     }
   }
 
-  log(outputMode, "normal", CheeseColors.blue, `\tStep 2/3 - detect running package manager - DONE`);
+  ///// Step 3/3 /////
 
-  log(outputMode, "normal", CheeseColors.blue, `\tStep 3/3 - validate running package manager vs. wanted package manager - START`);
+  let isValid = false;
+  if (!error) {
+    log(outputMode, "normal", error ? CheeseColors.gray : CheeseColors.blue, `\t${step3Title} - START`);
 
-  if (errorOccurred) {
-    log(outputMode, "normal", "", `\t\t(skipped due to error)`);
-
-    log(outputMode, "normal", CheeseColors.blue, `\tStep 3/3 - validate running package manager vs. wanted package manager - DONE`);
-    log(outputMode, "normal", CheeseColors.blue, `=================================`);
-    return true;
-  } else {
-    const isValid = packageManagerRunning.name === packageManagerName && satisfies(packageManagerRunning.version, packageManagerVersion);
+    isValid = packageManagerRunning.name === packageManagerName && satisfies(packageManagerRunning.version, packageManagerVersion);
 
     if (isValid) {
       log(outputMode, "normal", CheeseColors.green, `\t\tPackage manager '${packageManagerRunning.name}' with version ${packageManagerRunning.version} is valid!`);
-
-      log(outputMode, "normal", CheeseColors.blue, `\tStep 3/3 - validate running package manager vs. wanted package manager - DONE`);
-
-      return true;
     } else {
       if (packageManagerRunning.name !== packageManagerName) {
-        log(outputMode, "mute", CheeseColors.red, `\t\tRunning Package manager is '${packageManagerRunning.name}', but should be '${packageManagerName}'!`);
+        const errorReason = `\t\tRunning Package manager is '${packageManagerRunning.name}', but should be '${packageManagerName}'!`;
+        error = errorReason;
+        log(outputMode, "mute", CheeseColors.red, errorReason);
       } else {
-        log(outputMode, "mute", CheeseColors.red, `\t\tRunning Package manager version is '${packageManagerRunning.version}', which does not satisfy ${packageManagerVersion}!`);
+        const errorReason = `\t\tRunning Package manager version is '${packageManagerRunning.version}', which does not satisfy ${packageManagerVersion}!`;
+        error = errorReason;
+        log(outputMode, "mute", CheeseColors.red, errorReason);
       }
     }
 
-    log(outputMode, "normal", CheeseColors.blue, `\tStep 3/3 - validate running package manager vs. wanted package manager - DONE`);
-    log(outputMode, "normal", CheeseColors.blue, `=================================`);
-    return false;
+    if (error) {
+      log(outputMode, "normal", CheeseColors.red, `\t${step3Title} - DONE WITH ERROR`);
+    } else {
+      log(outputMode, "normal", CheeseColors.blue, `\t${step3Title} - DONE`);
+    }
   }
+
+  if (error) {
+    log(outputMode, "normal", CheeseColors.red, `SUMMARY: Package Manager Validation Error:`);
+    log(outputMode, "mute", CheeseColors.red, `${error.replace(/\t/g, "")}`);
+  }
+
+  log(outputMode, "normal", CheeseColors.blue, `=================================`);
+  return !error;
 };

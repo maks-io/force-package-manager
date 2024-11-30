@@ -61,8 +61,8 @@ if (output) {
 }
 
 const commandOutput = forcePackageManager(p || pmname, r || pmrange, o || output || "normal");
-if (typeof commandOutput === "string" && commandOutput === "true") {
-  console.log(commandOutput);
+
+if (commandOutput) {
   process.exit(0);
 } else {
   process.exit(1);
