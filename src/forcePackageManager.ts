@@ -93,14 +93,18 @@ export const forcePackageManager = (pkgMngrNameFromArgs?: string, pkgMngrVersion
 
   ///// Step 3/3 /////
 
-  let isValid = false;
   if (!error) {
     log(outputMode, "normal", error ? CheeseColors.gray : CheeseColors.blue, `\t${step3Title} - START`);
 
-    isValid = packageManagerRunning.name === packageManagerName && satisfies(packageManagerRunning.version, packageManagerVersion);
+    const packageManagerNameIsValid = packageManagerRunning.name === packageManagerName;
+    const packageManagerVersionIsValid = !packageManagerVersion ? true : satisfies(packageManagerRunning.version, packageManagerVersion);
+    const isValid = packageManagerNameIsValid && packageManagerVersionIsValid;
 
     if (isValid) {
       log(outputMode, "normal", CheeseColors.green, `\t\tPackage manager '${packageManagerRunning.name}' with version ${packageManagerRunning.version} is valid!`);
+      if (!packageManagerVersion) {
+        log(outputMode, "normal", CheeseColors.yellow, `\t\tWarning: please note that no wanted package manager version/range was provided/retrieved, therefore the version could not be checked!`);
+      }
     } else {
       if (packageManagerRunning.name !== packageManagerName) {
         const errorReason = `\t\tRunning Package manager is '${packageManagerRunning.name}', but should be '${packageManagerName}'!`;
