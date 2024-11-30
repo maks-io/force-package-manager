@@ -1,6 +1,6 @@
 {
   "name": "force-package-manager",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "A Command Line Tool to avoid that different team members use different package managers by accident, and therefor mess up your repository.",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -44,6 +44,7 @@
   "homepage": "https://github.com/maks-io/force-package-manager#readme",
   "dependencies": {
     "cheese-log": "^4.0.1",
+    "identify-monorepo-root": "^1.0.9",
     "identify-package-manager": "^1.1.0",
     "minimist": "^1.2.8",
     "semver": "^7.6.3",

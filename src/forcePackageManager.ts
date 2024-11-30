@@ -7,8 +7,8 @@ import { Range, satisfies } from "semver";
 import { getRunningPackageManagerInfo } from "./getRunningPackageManagerInfo";
 import { allowedVerboseModes, VerboseMode } from "./allowedVerboseModes";
 import { log } from "./log";
+import { cleanLockfiles } from "./cleanLockfiles";
 
-// TODO fix too many newlines in cheeselog
 cheese.config({
   reportGlobalConfigChange: false,
   reportInitialization: false,
@@ -24,7 +24,7 @@ const step1Title = "Step 1/3 - detect wanted package manager";
 const step2Title = "Step 2/3 - detect running package manager";
 const step3Title = "Step 3/3 - validate running package manager vs. wanted package manager";
 
-export const forcePackageManager = (pkgMngrNameFromArgs?: string, pkgMngrVersionFromArgs?: string, outputMode: VerboseMode = "verbose") => {
+export const forcePackageManager = (pkgMngrNameFromArgs?: string, pkgMngrVersionFromArgs?: string, clean?: boolean, outputMode: VerboseMode = "verbose") => {
   const who = whoAmINow();
 
   if (!who.isServerApp) {
@@ -121,6 +121,25 @@ export const forcePackageManager = (pkgMngrNameFromArgs?: string, pkgMngrVersion
   }
 
   if (error) {
+    if (clean && packageManagerName) {
+      cleanLockfiles(outputMode, packageManagerName);
+    } else {
+      if (!packageManagerRunning) {
+        try {
+          // this is an additional step, in case error already occurred during step 1
+          packageManagerRunning = getRunningPackageManagerInfo();
+        } catch (e) {}
+      }
+      if (packageManagerRunning.name !== packageManagerName) {
+        log(
+          outputMode,
+          "mute",
+          CheeseColors.yellow,
+          `WARNING: since the running package manager (${packageManagerRunning.name}) is different from the wanted one (${packageManagerName}), a new lockfile could have just been created. Consider using the script's --clean / -c option to automatically remove it.`,
+        );
+      }
+    }
+
     log(outputMode, "normal", CheeseColors.red, `SUMMARY: Package Manager Validation Error:`);
     log(outputMode, "mute", CheeseColors.red, `${error.replace(/\t/g, "")}`);
   }

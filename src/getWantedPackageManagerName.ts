@@ -23,8 +23,9 @@ export const getWantedPackageManagerName = (outputMode: VerboseMode, pkgMngrName
   const { name } = identifyPackageManager(false);
 
   if (!name || name === "unknown") {
-    log(outputMode, "normal", CheeseColors.red, `\t\t→ No, could not detect any info regarding wanted package manager.`);
-    throw new Error(`Failed.`);
+    const errorReason = `Could not detect any info regarding wanted package manager.`;
+    log(outputMode, "normal", CheeseColors.red, `\t\t→ No. ${errorReason}`);
+    throw new Error(errorReason);
   } else {
     log(outputMode, "verbose", CheeseColors.green, `\t\t→ Yes, the package manager is: ${name}`);
     return name;

@@ -8,7 +8,7 @@ import { allowedPkgManagers } from "./allowedPackageManagers";
 const packageJson = require("../package.json");
 const argv = minimist(process.argv.slice(2));
 
-const { h, help, v, version, n, p, pmname, r, pmrange, o, output, ...rest } = argv;
+const { h, help, v, version, n, p, pmname, r, pmrange, o, output, c, clean, ...rest } = argv;
 
 const remainingOptions = [...Object.keys(rest), ...rest._];
 
@@ -60,7 +60,7 @@ if (output) {
   }
 }
 
-const commandOutput = forcePackageManager(p || pmname, r || pmrange, o || output || "normal");
+const commandOutput = forcePackageManager(p || pmname, r || pmrange, c || clean, o || output || "normal");
 
 if (commandOutput) {
   process.exit(0);

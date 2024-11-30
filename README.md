@@ -26,12 +26,12 @@ A more detailed example with some options:
 ```json
 {
   "scripts": {
-    "preinstall": "npx -l -y force-package-manager -p npm -r '7.x.x' -o mute"
+    "preinstall": "npx -l -y force-package-manager -p npm -r '7.x.x' -o mute -c"
   }
 }
 ```
 
-This variant additionally restricts the version range for `npm` to `7.x.x` and only prints minimal output, due to `-o mute`.
+The variant above additionally restricts the version range for `npm` to `7.x.x`, only prints minimal output due to `-o mute` and cleans up unwanted lockfiles in case of errors due to `-c`.
 
 ## How does it work
 
@@ -59,12 +59,21 @@ Let us look at more details about the individual steps:
 
 <img src="./documentation/graph/force-package-manager.svg" alt="Force Package Manager" style="padding: 8px; background-color: white;" />
 
+## Clean up step
+
+In case an error occurs the script also allows to try and clean up any created lockfiles automatically, at the end.
+
+Imagine the following scenario:
+
+Your wanted package manager is `yarn-classic` and someone runs `npm install` accidentally. The `force-package-manager` script will detect the mismatch, however it cannot prevent `npm` from creating its `package-lock.json` lockfile. Due to this, we added a clean-up step via the `--clean` / `-c` option, which will automatically try and remove all lockfiles that do not belong to the wanted package manager.
+
 ## Options / Arguments
 
 | option      | short option | description                                                                                                                                              | allowed values                                     | default value | example |
-| ----------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- | ------------- | ------- |
+|-------------|--------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------| ------------- | ------- |
 | `--version` | `-v`         | Display this package's version number                                                                                                                    | -                                                  | -             | -       |
 | `--help`    | `-h`         | Display this package's help + usage info                                                                                                                 | -                                                  | -             | -       |
 | `--pmname`  | `-p`         | Defines which package manager is wanted                                                                                                                  | `npm`, `yarn-classic`, `yarn-berry`, `pnpm`, `bun` | -             | `npm`   |
 | `--pmrange` | `-r`         | Defines a restricting version range for the wanted package manager                                                                                       | Any valid semver range                             | -             | `"> 4"` |
+| `--clean`   | `-c`         | Activates the clean-up step at the end of the script, in case of errors (see above)                                                                      | -                                                  | -             |  |
 | `--output`  | `-o`         | Defines how many messages are being printed during the process. Use `mute` if you do not want to see any information except for negative script results. | `mute`, `normal`, `verbose`                        | `normal`      | `mute`  |
